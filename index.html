@@ -1,0 +1,94 @@
+<html lang="en">
+<head>
+  <title>DCMST Algorithm</title>
+  <style>
+    body {
+        margin: 0;
+    }
+    #graph {
+        width: 100%;
+        height: 100%;
+        background: #cfcfcf;
+        overflow: hidden;
+        position: relative;
+        user-select: none;
+    }
+    .graphNode {
+        position: absolute;
+        border-radius: 50%;
+        background: darkgreen;
+        cursor: pointer;
+    }
+    .graphNode:active {
+        cursor: grabbing;
+    }
+    .linkElement {
+        position: absolute;
+        cursor: pointer;
+        transform-origin: center left;
+        outline: black;
+    }
+    .linkLine {
+        position: relative;
+        background: gray;
+    }
+    .linkLineBeginWrap, .linkLineEndWrap {
+        position: absolute;
+        border-radius: 50%;
+    }
+    .linkLineBall {
+        border-radius: 50%;
+        background: lightskyblue;
+    }
+    #nodeMenu {
+        position: absolute;
+        border-radius: 5px;
+        border: 1px solid black;
+        padding: 5px;
+        display: none;
+        background: white;
+        z-index: 1;
+    }
+    .nodeMenuAction {
+        border-bottom: 1px solid black;
+        transition: background-color .2s;
+        cursor: pointer;
+    }
+    .nodeMenuAction:hover {
+        background-color: #ececec;
+    }
+    .nodeMenuAction + .nodeMenuAction {
+        margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="graph"></div>
+
+<script src="utils.js"></script>
+<script src="node_menu.js"></script>
+<script src="elements/line.js"></script>
+<script src="elements/graph-node.js"></script>
+
+<script>
+  const elements = {};
+  const selectedClass = GraphNode;
+  const grabbedElement = {
+    movedTimes: 0,
+    isNew: false,
+    el: null,
+  }
+  const selectedElement = {
+    el: null,
+  };
+
+  const graph = document.getElementById("graph");
+  const graphSize = graph.getBoundingClientRect();
+  const nodeMenu = new NodeMenu();
+</script>
+
+<script src="handlers.js"></script>
+
+</body>
+</html>
