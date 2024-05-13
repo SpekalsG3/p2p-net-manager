@@ -5,8 +5,7 @@ const GlobalActions = {
 class NodeMenu {
   // private
   globalActions = [[GlobalActions.Delete, "Delete", () => {
-    graph.activeElement.el.onDelete();
-    graph.deleteElement(graph.activeElement.el);
+    graph.deleteElement(graph.activeElement.el.div.id);
     graph.activeElement.el = null;
   }]];
   addedActions = [];

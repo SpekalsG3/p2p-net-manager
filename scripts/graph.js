@@ -34,9 +34,11 @@ class Graph {
     return id;
   }
 
-  deleteElement(element) {
+  deleteElement(elementId) {
+    const element = this.elements[elementId];
+    element.onDelete();
     this.div.removeChild(element.div);
-    delete this.elements[element.id];
+    delete this.elements[element.div.id];
   }
 
   getTarget(e) {
@@ -55,10 +57,10 @@ class Graph {
     return target;
   }
 
-  startGrabbing(elementId, x, y) {
+  startGrabbing(initiatedElId, elementId) {
     this.activeElement.el = this.elements[elementId];
 
-    this.activeElement.el.onGrab(x, y);
+    this.activeElement.el.onGrab(initiatedElId);
     this.activeElement.el.div.style.pointerEvents = "none";
 
     this.activeElement.isGrabbed = true;

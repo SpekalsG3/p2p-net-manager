@@ -15,7 +15,7 @@ function handleNodeConnect({ X, Y }) {
   line.selectedPart = 2;
   line.onMouseMove(X, Y);
 
-  graph.startGrabbing(elementId, X, Y);
+  graph.startGrabbing(graph.activeElement.el.div.id, elementId);
   graph.activeElement.isNew = true;
 }
 
@@ -26,7 +26,6 @@ class GraphNode {
   size = GraphNode.defaultSize;
 
   // public
-  id;
   div;
   x;
   y;
@@ -54,15 +53,23 @@ class GraphNode {
 
     return this;
   }
-  onGrab(X, Y) {
+
+  onGrab(initiatedElId) {
   }
-  setOnUnselect() {
-  }
+
   onMouseMove(x, y) {
     this.x = x;
     this.y = y;
     this.updatePos();
   }
-  onDelete() {}
+
+  onDelete() {
+    console.log(`connections for ${this.div.id}`);
+    const connections = network.getConnections(this.div.id);
+    for (const connection of connections) {
+      graph.deleteElement(connection);
+    }
+  }
+
   finishGrab({ target }) {}
 }

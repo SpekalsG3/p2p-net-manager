@@ -12,9 +12,9 @@ class LineElement {
   isOriginBegin = false;
   midOffset = { x: 0, y: 0 }
   isMovable;
+  connectedFrom;
 
   // public
-  id;
   div;
   x;
   y;
@@ -120,12 +120,14 @@ class LineElement {
     return this;
   }
 
-  onGrab(X, Y) {
+  onGrab(initiatedElId) {
+    this.connectedFrom = initiatedElId;
     if (!this.isMovable) {
       return;
     }
 
-    const length = this.calculateLength(X, Y);
+    const { x, y } = graph.elements[initiatedElId];
+    const length = this.calculateLength(x, y);
     if (length < 15) { // origin end
       this.switchOrigin();
       this.updatePos();
@@ -141,9 +143,6 @@ class LineElement {
 
       this.selectedPart = 1; // middle
     }
-  }
-
-  setOnUnselect() {
   }
 
   onMouseMove(X, Y) {
@@ -166,7 +165,9 @@ class LineElement {
     this.updatePos();
   }
 
-  onDelete() {}
+  onDelete() {
+    network.removeConnection(this.div.id);
+  }
 
   finishGrab({ target }) {
     this.selectedPart = null;
@@ -174,10 +175,12 @@ class LineElement {
     const el = graph.elements[target?.id];
     if (target === null || el instanceof LineElement) {
       if (graph.activeElement.isNew) {
-        graph.deleteElement(this);
+        graph.deleteElement(this.div.id);
       }
       return;
     }
+
+    network.addConnection(this.div.id, this.connectedFrom, el.div.id);
 
     this.div.style.zIndex = "0";
     this.length = this.calculateLength(el.x, el.y);
