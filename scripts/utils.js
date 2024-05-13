@@ -11,44 +11,8 @@ function showElement(div) {
   div.style.display = "block";
 }
 
-function newGraphElement(element) {
-  function newElementId() {
-    let id;
-    do {
-      id = guidGenerator();
-    } while (elements[id] !== undefined);
-    return id;
-  }
-  element.div.setAttribute("data-type", "graph_element");
-
-  element.div.id = newElementId();
-  elements[element.div.id] = element;
-
-  graph.appendChild(element.div);
-}
-function deleteGraphElement(element) {
-  graph.removeChild(element.div);
-  delete elements[element.id];
-}
-
 function mouseEventToXY(e) {
-  const x = e.clientX - graphSize.x;
-  const y = e.clientY - graphSize.y;
+  const x = e.clientX;
+  const y = e.clientY;
   return { x, y }
-}
-
-function getGraphTarget(e) {
-  let target = e.target;
-  while (true) {
-    if (target.getAttribute("data-type") === "graph_element") {
-      break;
-    } else if (target === nodeMenu.div) {
-      break;
-    } else if (target === graph) {
-      target = null;
-      break;
-    }
-    target = target.parentElement;
-  }
-  return target;
 }

@@ -178,9 +178,9 @@ class LineElement {
     this.div.style.pointerEvents = "unset";
     this.selectedPart = null;
 
-    const el = elements[target?.id];
+    const el = graph.elements[target?.id];
     if (target === null || el instanceof LineElement) {
-      deleteGraphElement(this);
+      graph.deleteElement(this);
       return;
     }
 

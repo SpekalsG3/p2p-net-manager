@@ -3,21 +3,21 @@ const GraphNodeActions = {
 }
 
 function handleNodeConnect({ X, Y }) {
-  const { x, y } = activeElement.el;
+  const { x, y } = graph.activeElement.el;
   const line = new LineElement({
     x,
     y,
     isMovable: false,
     onCursor: false,
   });
-  newGraphElement(line);
+  graph.newElement(line);
 
   line.onGrab(X, Y);
   line.selectedPart = 2;
   line.onMouseMove(X, Y);
 
-  activeElement.el = line;
-  activeElement.isGrabbed = true;
+  graph.activeElement.el = line;
+  graph.activeElement.isGrabbed = true;
 }
 
 class GraphNode {

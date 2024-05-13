@@ -1,13 +1,7 @@
-const elements = {};
 const selectedClass = GraphNode;
-const activeElement = {
-  isGrabbed: false,
-  movedTimes: 0,
-  isNew: false,
-  el: null,
-};
 
-const graph = document.getElementById("graph");
-const graphSize = graph.getBoundingClientRect();
+const graph = new Graph();
+document.body.appendChild(graph.div);
+
 const nodeMenu = new NodeMenu();
-graph.appendChild(nodeMenu.div);
+graph.div.appendChild(nodeMenu.div);

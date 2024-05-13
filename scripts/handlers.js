@@ -1,62 +1,63 @@
-graph.addEventListener("mousedown", (e) => {
+// don't want to bloat graph.js
+graph.div.addEventListener("mousedown", (e) => {
   const {x,y} = mouseEventToXY(e);
-  const target = getGraphTarget(e);
+  const target = graph.getTarget(e);
 
   if (nodeMenu.isShown && target !== nodeMenu.div) {
-    activeElement.el = null;
+    graph.activeElement.el = null;
     nodeMenu.hide();
     return;
   }
   if (target === nodeMenu.div) {
     // nothing
-  } else if (target !== null && !activeElement.isGrabbed) {
+  } else if (target !== null && !graph.activeElement.isGrabbed) {
     // start grabbing
-    activeElement.el = elements[target.id];
-    activeElement.isGrabbed = activeElement.el.onGrab(x, y);
-  } else if (!activeElement.el) {
+    graph.activeElement.el = graph.elements[target.id];
+    graph.activeElement.isGrabbed = graph.activeElement.el.onGrab(x, y);
+  } else if (!graph.activeElement.el) {
     // clicked on empty graph, create selected class
     const element = new selectedClass({ x, y });
 
-    activeElement.isNew = true;
-    activeElement.el = element;
-    activeElement.movedTimes = 1;
-    activeElement.isGrabbed = true;
+    graph.activeElement.isNew = true;
+    graph.activeElement.el = element;
+    graph.activeElement.movedTimes = 1;
+    graph.activeElement.isGrabbed = true;
 
-    newGraphElement(element);
+    graph.newElement(element);
   }
 });
 
-graph.addEventListener("mousemove", (e) => {
+graph.div.addEventListener("mousemove", (e) => {
   const {x,y} = mouseEventToXY(e);
 
-  if (activeElement.isGrabbed) {
-    activeElement.movedTimes++;
-    if (activeElement.movedTimes > 5) {
-      activeElement.el.onMouseMove(x, y);
+  if (graph.activeElement.isGrabbed) {
+    graph.activeElement.movedTimes++;
+    if (graph.activeElement.movedTimes > 5) {
+      graph.activeElement.el.onMouseMove(x, y);
     }
-  } else if (activeElement.el) {
+  } else if (graph.activeElement.el) {
     // shouldn't do anything
   }
 });
 
-graph.addEventListener("mouseup", (e) => {
+graph.div.addEventListener("mouseup", (e) => {
   const {x,y} = mouseEventToXY(e);
-  const target = getGraphTarget(e);
+  const target = graph.getTarget(e);
 
   if (target === nodeMenu.div) {
     nodeMenu.handleClick(e);
-  } else if (activeElement.el) {
-    if (activeElement.movedTimes < 5 && !activeElement.isNew) {
+  } else if (graph.activeElement.el) {
+    if (graph.activeElement.movedTimes < 5 && !graph.activeElement.isNew) {
       // means user just clicked on element, select it
-      nodeMenu.show(x, y, activeElement.el.actions)
+      nodeMenu.show(x, y, graph.activeElement.el.actions)
     } else {
       // user was actually grabbing and moving element
-      activeElement.el.finishGrab({ target });
-      activeElement.el = null;
+      graph.activeElement.el.finishGrab({ target });
+      graph.activeElement.el = null;
     }
 
-    activeElement.isGrabbed = false;
-    activeElement.isNew = false;
-    activeElement.movedTimes = 0;
+    graph.activeElement.isGrabbed = false;
+    graph.activeElement.isNew = false;
+    graph.activeElement.movedTimes = 0;
   }
 });

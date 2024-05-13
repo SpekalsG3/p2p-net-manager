@@ -5,9 +5,9 @@ const GlobalActions = {
 class NodeMenu {
   // private
   globalActions = [[GlobalActions.Delete, "Delete", () => {
-    activeElement.el.onDelete();
-    deleteGraphElement(activeElement.el);
-    activeElement.el = null;
+    graph.activeElement.el.onDelete();
+    graph.deleteElement(graph.activeElement.el);
+    graph.activeElement.el = null;
   }]];
   addedActions = [];
 
@@ -15,7 +15,6 @@ class NodeMenu {
   isShown = false;
 
   // private
-  deleteElement() {}
   createMenuAction(dataAction, label) {
     const div = document.createElement("div");
     div.innerHTML = label;
