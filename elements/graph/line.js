@@ -11,8 +11,6 @@ class LineElement {
   selectedPart = null; // 1 - middle, 2 - one of the ends
   isOriginBegin = false;
   midOffset = { x: 0, y: 0 }
-  isMovable;
-  connectedFrom;
 
   // public
   div;
@@ -60,7 +58,6 @@ class LineElement {
   constructor({
     x,
     y,
-    isMovable = true,
     onCursor = true,
   }) {
     this.div = document.createElement("div");
@@ -114,19 +111,12 @@ class LineElement {
     );
     this.x = newX;
     this.y = newY;
-    this.isMovable = isMovable;
     this.updatePos();
 
     return this;
   }
 
-  onGrab(initiatedElId) {
-    this.connectedFrom = initiatedElId;
-    if (!this.isMovable) {
-      return;
-    }
-
-    const { x, y } = graph.elements[initiatedElId];
+  onGrab({ initiatedElId, x, y }) {
     const length = this.calculateLength(x, y);
     if (length < 15) { // origin end
       this.switchOrigin();
@@ -166,25 +156,9 @@ class LineElement {
   }
 
   onDelete() {
-    network.removeConnection(this.div.id);
   }
 
   finishGrab({ target }) {
     this.selectedPart = null;
-
-    const el = graph.elements[target?.id];
-    if (target === null || el instanceof LineElement) {
-      if (graph.activeElement.isNew) {
-        graph.deleteElement(this.div.id);
-      }
-      return;
-    }
-
-    network.addConnection(this.div.id, this.connectedFrom, el.div.id);
-
-    this.div.style.zIndex = "0";
-    this.length = this.calculateLength(el.x, el.y);
-    this.angle = this.calculateAngle(el.x, el.y);
-    this.updatePos();
   }
 }

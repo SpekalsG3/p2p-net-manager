@@ -27,10 +27,13 @@ class Network {
   }
 
   removeConnection(link) {
-    const { from, to } = this.connectionsToNodes[link];
+    const connection = this.connectionsToNodes[link];
+    if (!connection) {
+      return;
+    }
     delete this.connectionsToNodes[link];
-    delete this.nodesToConnections[from][link];
-    delete this.nodesToConnections[to][link];
+    delete this.nodesToConnections[connection.from][link];
+    delete this.nodesToConnections[connection.to][link];
   }
 
   getConnections(node) {

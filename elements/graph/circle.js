@@ -4,7 +4,7 @@ const GraphNodeActions = {
 
 function handleNodeConnect({ X, Y }) {
   const { x, y } = graph.activeElement.el;
-  const line = new LineElement({
+  const line = new NodeLink({
     x,
     y,
     isMovable: false,
@@ -12,11 +12,15 @@ function handleNodeConnect({ X, Y }) {
   });
   const elementId = graph.newElement(line);
 
+  graph.startGrabbing({
+    x: X, y: Y,
+    initiatedElId: graph.activeElement.el.div.id,
+    elementId,
+  });
+  graph.activeElement.isNew = true;
+
   line.selectedPart = 2;
   line.onMouseMove(X, Y);
-
-  graph.startGrabbing(graph.activeElement.el.div.id, elementId);
-  graph.activeElement.isNew = true;
 }
 
 class CircleElement {

@@ -57,10 +57,10 @@ class Graph {
     return target;
   }
 
-  startGrabbing(initiatedElId, elementId) {
+  startGrabbing({ initiatedElId, x, y, elementId }) {
     this.activeElement.el = this.elements[elementId];
 
-    this.activeElement.el.onGrab(initiatedElId);
+    this.activeElement.el.onGrab({ initiatedElId, x, y });
     this.activeElement.el.div.style.pointerEvents = "none";
 
     this.activeElement.isGrabbed = true;

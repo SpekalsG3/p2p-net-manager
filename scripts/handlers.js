@@ -13,14 +13,22 @@ graph.div.addEventListener("mousedown", (e) => {
   } else if (target !== null) {
     if (!graph.activeElement.isGrabbed) {
       // start grabbing
-      graph.startGrabbing(null, target.id);
+      graph.startGrabbing({
+        x,y,
+        initiatedElId: null,
+        elementId: target.id,
+      });
     }
   } else if (!graph.activeElement.el) {
     // clicked on empty graph, create selected class
     const element = new selectedClass({ x, y });
     const elementId = graph.newElement(element);
 
-    graph.startGrabbing(null, elementId);
+    graph.startGrabbing({
+      x,y,
+      initiatedElId: null,
+      elementId,
+    });
     graph.activeElement.isNew = true;
   }
 });
