@@ -22,7 +22,7 @@ class LineElement {
 
   // private
   adjustXY(X, Y) {
-    const shift = (this.wrapperPad + this.width) / 2;
+    const shift = this.wrapperPad + this.width / 2;
     return {
       x: X,
       y: Y - shift,
@@ -30,7 +30,7 @@ class LineElement {
   }
   updatePos() {
     this.div.style.left = `${this.x}px`;
-    this.div.style.top  = `${this.y - this.width / 2}px`; // todo: adjust for LinkElement padding
+    this.div.style.top  = `${this.y}px`; // todo: adjust for LinkElement padding
     this.div.firstChild.style.width = `${this.length}px`;
     this.div.firstChild.style.height = `${this.width}px`;
     this.div.style.transform = `rotate(${-this.angle}deg)`;
@@ -74,35 +74,33 @@ class LineElement {
       this.div.appendChild(line);
     }
 
-    if (isMovable) {
-      const lineEndPad = (this.wrapperPad * 2 + this.lineEndSize) / 2;
-      {
-        const wrap = document.createElement("div");
-        wrap.classList.add("linkLineBeginWrap");
-        wrap.style.left = `-${lineEndPad}px`;
-        wrap.style.padding = `${this.wrapperPad}px`;
-        wrap.style.top = `calc(50% - ${lineEndPad}px)`;
-        const begin = document.createElement("div");
-        begin.classList.add("linkLineBall");
-        begin.style.width = `${this.lineEndSize}px`;
-        begin.style.height = `${this.lineEndSize}px`;
-        wrap.appendChild(begin);
-        this.div.appendChild(wrap);
-      }
+    const lineEndPad = (this.wrapperPad * 2 + this.lineEndSize) / 2;
+    {
+      const wrap = document.createElement("div");
+      wrap.classList.add("linkLineBeginWrap");
+      wrap.style.left = `-${lineEndPad}px`;
+      wrap.style.padding = `${this.wrapperPad}px`;
+      wrap.style.top = `calc(50% - ${lineEndPad}px)`;
+      const begin = document.createElement("div");
+      begin.classList.add("linkLineBall");
+      begin.style.width = `${this.lineEndSize}px`;
+      begin.style.height = `${this.lineEndSize}px`;
+      wrap.appendChild(begin);
+      this.div.appendChild(wrap);
+    }
 
-      {
-        const wrap = document.createElement("div");
-        wrap.classList.add("linkLineEndWrap");
-        wrap.style.right = `-${lineEndPad}px`
-        wrap.style.padding = `${this.wrapperPad}px`;
-        wrap.style.top = `calc(50% - ${lineEndPad}px)`;
-        const end = document.createElement("div");
-        end.classList.add("linkLineBall");
-        end.style.width = `${this.lineEndSize}px`;
-        end.style.height = `${this.lineEndSize}px`;
-        wrap.appendChild(end);
-        this.div.appendChild(wrap);
-      }
+    {
+      const wrap = document.createElement("div");
+      wrap.classList.add("linkLineEndWrap");
+      wrap.style.right = `-${lineEndPad}px`
+      wrap.style.padding = `${this.wrapperPad}px`;
+      wrap.style.top = `calc(50% - ${lineEndPad}px)`;
+      const end = document.createElement("div");
+      end.classList.add("linkLineBall");
+      end.style.width = `${this.lineEndSize}px`;
+      end.style.height = `${this.lineEndSize}px`;
+      wrap.appendChild(end);
+      this.div.appendChild(wrap);
     }
 
     let shift = 0;
