@@ -19,11 +19,11 @@ function handleNodeConnect({ X, Y }) {
   graph.activeElement.isNew = true;
 }
 
-class GraphNode {
+class CircleElement {
   static defaultSize = 20;
 
   // private
-  size = GraphNode.defaultSize;
+  size = CircleElement.defaultSize;
 
   // public
   div;
