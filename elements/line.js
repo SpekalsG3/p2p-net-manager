@@ -179,6 +179,7 @@ class LineElement {
       return;
     }
 
+    this.div.style.zIndex = "0";
     this.length = this.calculateLength(el.x, el.y);
     this.angle = this.calculateAngle(el.x, el.y);
     this.updatePos();

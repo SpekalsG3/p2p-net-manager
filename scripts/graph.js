@@ -25,7 +25,7 @@ class Graph {
       id = guidGenerator();
     } while (this.elements[id] !== undefined);
 
-    element.div.setAttribute("data-type", "graph_element");
+    element.div.classList.add("graphElement")
     element.div.id = id;
     this.elements[id] = element;
 
@@ -42,7 +42,7 @@ class Graph {
   getTarget(e) {
     let target = e.target;
     while (true) {
-      if (target.getAttribute("data-type") === "graph_element") {
+      if (target.classList.contains("graphElement")) {
         break;
       } else if (target === nodeMenu.div) {
         break;
