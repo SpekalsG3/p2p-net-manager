@@ -5,9 +5,9 @@ const GlobalActions = {
 class NodeMenu {
   // private
   globalActions = [[GlobalActions.Delete, "Delete", () => {
-    selectedElement.el.onDelete();
-    deleteGraphElement(selectedElement.el);
-    selectedElement.el = null;
+    activeElement.el.onDelete();
+    deleteGraphElement(activeElement.el);
+    activeElement.el = null;
   }]];
   addedActions = [];
 
@@ -42,7 +42,7 @@ class NodeMenu {
         throw new Error(`Unknown data-action "${action}"`);
       }
       firedAction[2]({ X: x, Y: y });
-      hideElement(nodeMenu.div)
+      this.hide();
     }
   }
   show(x, y, actions) {

@@ -3,7 +3,7 @@ const GraphNodeActions = {
 }
 
 function handleNodeConnect({ X, Y }) {
-  const { x, y } = selectedElement.el;
+  const { x, y } = activeElement.el;
   const line = new LineElement({
     x,
     y,
@@ -16,8 +16,8 @@ function handleNodeConnect({ X, Y }) {
   line.selectedPart = 2;
   line.onMouseMove(X, Y);
 
-  grabbedElement.el = line;
-  selectedElement.el = null;
+  activeElement.el = line;
+  activeElement.isGrabbed = true;
 }
 
 class GraphNode {
@@ -56,6 +56,7 @@ class GraphNode {
     return this;
   }
   onGrab(X, Y) {
+    return true;
   }
   setOnUnselect() {
   }

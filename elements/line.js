@@ -126,7 +126,7 @@ class LineElement {
     this.div.style.pointerEvents = "none";
 
     if (!this.isMovable) {
-      return;
+      return false;
     }
 
     const length = this.calculateLength(X, Y);
@@ -145,6 +145,8 @@ class LineElement {
 
       this.selectedPart = 1; // middle
     }
+
+    return true;
   }
 
   setOnUnselect() {
