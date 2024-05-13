@@ -35,7 +35,7 @@ graph.addEventListener("mousemove", (e) => {
   } else if (selectedElement.el !== null) {
     // shouldn't do anything
   }
-})
+});
 
 graph.addEventListener("mouseup", (e) => {
   const {x,y} = mouseEventToXY(e);
@@ -43,11 +43,14 @@ graph.addEventListener("mouseup", (e) => {
 
   if (grabbedElement.el !== null) {
     if (grabbedElement.movedTimes < 5 && !grabbedElement.isNew) {
+      // means user just clicked on element, select it
       selectedElement.el = grabbedElement.el;
       nodeMenu.show(x, y, selectedElement.el.actions)
+    } else {
+      // user was actually grabbing and moving element
+      grabbedElement.el.finishGrab({ target });
     }
 
-    grabbedElement.el.finishGrab({ target });
     grabbedElement.isNew = false;
     grabbedElement.movedTimes = 0;
     grabbedElement.el = null;

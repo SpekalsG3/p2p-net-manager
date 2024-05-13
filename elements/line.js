@@ -174,16 +174,16 @@ class LineElement {
 
   finishGrab({ target }) {
     this.div.style.pointerEvents = "unset";
-
     this.selectedPart = null;
-    if (target === null) {
+
+    const el = elements[target?.id];
+    if (target === null || el instanceof LineElement) {
       deleteGraphElement(this);
       return;
     }
 
-    const { x, y } = elements[target.id];
-    this.length = this.calculateLength(x, y);
-    this.angle = this.calculateAngle(x, y);
+    this.length = this.calculateLength(el.x, el.y);
+    this.angle = this.calculateAngle(el.x, el.y);
     this.updatePos();
   }
 }
