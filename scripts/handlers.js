@@ -4,6 +4,7 @@ graph.addEventListener("mousedown", (e) => {
 
   if (nodeMenu.isShown && target !== nodeMenu.div) {
     nodeMenu.hide();
+    return;
   }
   if (target === nodeMenu.div) {
     // nothing
@@ -21,8 +22,6 @@ graph.addEventListener("mousedown", (e) => {
     grabbedElement.movedTimes = 1;
 
     newGraphElement(element);
-  } else if (grabbedElement.el !== null) {
-    grabbedElement.el.finishGrab({ target });
   }
 });
 

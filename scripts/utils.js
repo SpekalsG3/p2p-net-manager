@@ -26,6 +26,10 @@ function newGraphElement(element) {
 
   graph.appendChild(element.div);
 }
+function deleteGraphElement(element) {
+  graph.removeChild(element.div);
+  delete elements[element.id];
+}
 
 function mouseEventToXY(e) {
   const x = e.clientX - graphSize.x;
@@ -38,11 +42,9 @@ function getGraphTarget(e) {
   while (true) {
     if (target.getAttribute("data-type") === "graph_element") {
       break;
-    }
-    if (target === nodeMenu.div) {
+    } else if (target === nodeMenu.div) {
       break;
-    }
-    if (target === graph) {
+    } else if (target === graph) {
       target = null;
       break;
     }

@@ -6,8 +6,7 @@ class NodeMenu {
   // private
   globalActions = [[GlobalActions.Delete, "Delete", () => {
     selectedElement.el.onDelete();
-    graph.removeChild(selectedElement.el.div);
-    delete elements[selectedElement.el.id];
+    deleteGraphElement(selectedElement.el);
     selectedElement.el = null;
   }]];
   addedActions = [];

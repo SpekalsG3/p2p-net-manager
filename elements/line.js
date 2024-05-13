@@ -21,10 +21,12 @@ class LineElement {
   actions = [];
 
   // private
-  updateXY(X, Y) {
+  adjustXY(X, Y) {
     const shift = (this.wrapperPad + this.width) / 2;
-    this.x = X;
-    this.y = Y - shift;
+    return {
+      x: X,
+      y: Y - shift,
+    };
   }
   updatePos() {
     this.div.style.left = `${this.x}px`;
@@ -42,8 +44,7 @@ class LineElement {
     this.isOriginBegin = !this.isOriginBegin;
   }
   calculateAngle(X, Y) {
-    const x = X - this.x;
-    const y = Y - this.y;
+    const {x,y} = this.adjustXY(X - this.x, Y - this.y);
     let pad = 0;
     if (x < 0) {
       pad = 180;
@@ -51,8 +52,7 @@ class LineElement {
     return pad + -(Math.atan(y / x) * 180 / Math.PI); // degree in range [-90; 270]
   }
   calculateLength(X, Y) {
-    const x = X - this.x;
-    const y = Y - this.y;
+    const {x,y} = this.adjustXY(X - this.x, Y - this.y);
     return Math.sqrt(x * x + y * y);
   }
 
@@ -110,16 +110,21 @@ class LineElement {
       const size = Math.sqrt((this.length ** 2) / 2);
       shift = size / 2;
     }
-    this.updateXY(
+    const { x: newX, y: newY } = this.adjustXY(
       x - shift,
       y + shift,
     );
+    this.x = newX;
+    this.y = newY;
     this.isMovable = isMovable;
     this.updatePos();
 
     return this;
   }
+
   onGrab(X, Y) {
+    this.div.style.pointerEvents = "none";
+
     if (!this.isMovable) {
       return;
     }
@@ -141,15 +146,19 @@ class LineElement {
       this.selectedPart = 1; // middle
     }
   }
+
   setOnUnselect() {
   }
+
   onMouseMove(X, Y) {
     switch (this.selectedPart) {
       case 1: {
-        this.updateXY(
+        const {x,y} = this.adjustXY(
           X - this.midOffset.x,
           Y + this.midOffset.y,
         );
+        this.x = x;
+        this.y = y;
         break;
       }
       case 2: {
@@ -160,8 +169,21 @@ class LineElement {
     }
     this.updatePos();
   }
+
   onDelete() {}
+
   finishGrab({ target }) {
+    this.div.style.pointerEvents = "unset";
+
     this.selectedPart = null;
+    if (target === null) {
+      deleteGraphElement(this);
+      return;
+    }
+
+    const { x, y } = elements[target.id];
+    this.length = this.calculateLength(x, y);
+    this.angle = this.calculateAngle(x, y);
+    this.updatePos();
   }
 }

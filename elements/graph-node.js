@@ -12,6 +12,7 @@ function handleNodeConnect({ X, Y }) {
   });
   newGraphElement(line);
 
+  line.onGrab(X, Y);
   line.selectedPart = 2;
   line.onMouseMove(X, Y);
 
