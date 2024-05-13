@@ -39,6 +39,7 @@ graph.addEventListener("mousedown", (e) => {
     graph.appendChild(element.div);
   }
 });
+
 graph.addEventListener("mousemove", (e) => {
   const {x,y} = mouseEventToXY(e);
 
@@ -51,6 +52,7 @@ graph.addEventListener("mousemove", (e) => {
     // shouldn't do anything
   }
 })
+
 graph.addEventListener("mouseup", (e) => {
   const {x,y} = mouseEventToXY(e);
 
