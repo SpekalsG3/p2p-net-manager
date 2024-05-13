@@ -16,3 +16,30 @@ function mouseEventToXY(e) {
   const y = e.clientY;
   return { x, y }
 }
+
+function stressTest() {
+  function spawnNode() {
+    const x = Math.floor(Math.random() * sizes.width);
+    const y = Math.floor(Math.random() * sizes.height);
+    const node = new NetworkNode({ x, y });
+    graph.newElement(node);
+    return node;
+  }
+
+  const sizes = graph.div.getBoundingClientRect();
+
+  const nodes = [spawnNode()];
+  for (let i = 1; i < 10000; i++) {
+    const node = spawnNode();
+    for (let n = 0; (n < 15) && (n < nodes.length); n++) {
+      const link = new NodeLink({
+        x: node.x,
+        y: node.y,
+      });
+      link.connectedFrom = node.div.id;
+      graph.newElement(link);
+      link.finishGrab({ target: nodes[n].div })
+    }
+    nodes.push(node);
+  }
+}

@@ -9,7 +9,7 @@ class Network {
     from,
     to,
   ) {
-    console.log(`${link}\nfrom: ${from}\nto  : ${to}`);
+    // console.log(`${link}\nfrom: ${from}\nto  : ${to}`);
     if (this.connectionsToNodes[link]) {
       throw new Error(`Link with id "${link}" already exists`);
     }
