@@ -9,7 +9,6 @@ graph.addEventListener("mousedown", (e) => {
   if (target === nodeMenu.div) {
     // nothing
   } else if (target !== null) {
-    console.log(target);
     // start grabbing
     grabbedElement.el = elements[target.id];
     grabbedElement.el.onGrab(x, y);
