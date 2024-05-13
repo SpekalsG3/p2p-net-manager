@@ -8,8 +8,12 @@ class NodeMenu {
     selectedElement.el.onDelete();
     graph.removeChild(selectedElement.el.div);
     delete elements[selectedElement.el.id];
+    selectedElement.el = null;
   }]];
   addedActions = [];
+
+  // public
+  isShown = false;
 
   // private
   deleteElement() {}
@@ -20,7 +24,17 @@ class NodeMenu {
     div.setAttribute("data-action", dataAction);
     return div;
   }
+
+  // public
+  constructor() {
+    this.div = document.createElement("div");
+    this.div.id = "nodeMenu";
+
+    return this;
+  }
   handleClick(e) {
+    const {x,y} = mouseEventToXY(e);
+
     if (e.target.classList.contains("nodeMenuAction")) {
       const action = e.target.getAttribute("data-action");
       const firedAction = [...this.globalActions, ...this.addedActions]
@@ -28,18 +42,9 @@ class NodeMenu {
       if (!firedAction) {
         throw new Error(`Unknown data-action "${action}"`);
       }
-      firedAction[2](action);
+      firedAction[2]({ X: x, Y: y });
       hideElement(nodeMenu.div)
     }
-  }
-
-  // public
-  constructor() {
-    this.div = document.createElement("div");
-    this.div.id = "nodeMenu";
-    this.div.addEventListener("click", this.handleClick.bind(this));
-
-    graph.appendChild(this.div);
   }
   show(x, y, actions) {
     this.div.style.left = `${x + 5}px`;
@@ -51,9 +56,11 @@ class NodeMenu {
       this.div.appendChild(this.createMenuAction(dataAction, label));
     }
 
+    this.isShown = true;
     showElement(this.div);
   }
   hide() {
+    this.isShown = false;
     hideElement(this.div);
   }
 }

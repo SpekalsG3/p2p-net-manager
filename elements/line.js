@@ -8,18 +8,24 @@ class LineElement {
   wrapperPad = 6;
   lineEndSize = 10;
   angle = 45;
-  selectedPart = 0; // 0 - middle, 1 - one of the ends
+  selectedPart = null; // 1 - middle, 2 - one of the ends
   isOriginBegin = false;
   midOffset = { x: 0, y: 0 }
-  y;
-  x;
+  isMovable;
 
   // public
   id;
   div;
+  x;
+  y;
   actions = [];
 
   // private
+  updateXY(X, Y) {
+    const shift = (this.wrapperPad + this.width) / 2;
+    this.x = X;
+    this.y = Y - shift;
+  }
   updatePos() {
     this.div.style.left = `${this.x}px`;
     this.div.style.top  = `${this.y - this.width / 2}px`; // todo: adjust for LinkElement padding
@@ -51,10 +57,13 @@ class LineElement {
   }
 
   // interface
-  constructor(x, y) {
-    this.id = newElementId();
+  constructor({
+    x,
+    y,
+    isMovable = true,
+    onCursor = true,
+  }) {
     this.div = document.createElement("div");
-    this.div.id = this.id;
 
     this.div.classList.add("linkElement");
     this.div.style.padding = `${this.wrapperPad}px 0`
@@ -65,50 +74,63 @@ class LineElement {
       this.div.appendChild(line);
     }
 
-    const lineEndPad = (this.wrapperPad * 2 + this.lineEndSize) / 2;
-    {
-      const wrap = document.createElement("div");
-      wrap.classList.add("linkLineBeginWrap");
-      wrap.style.left = `-${lineEndPad}px`;
-      wrap.style.padding = `${this.wrapperPad}px`;
-      wrap.style.top = `calc(50% - ${lineEndPad}px)`;
-      const begin = document.createElement("div");
-      begin.classList.add("linkLineBall");
-      begin.style.width = `${this.lineEndSize}px`;
-      begin.style.height = `${this.lineEndSize}px`;
-      wrap.appendChild(begin);
-      this.div.appendChild(wrap);
+    if (isMovable) {
+      const lineEndPad = (this.wrapperPad * 2 + this.lineEndSize) / 2;
+      {
+        const wrap = document.createElement("div");
+        wrap.classList.add("linkLineBeginWrap");
+        wrap.style.left = `-${lineEndPad}px`;
+        wrap.style.padding = `${this.wrapperPad}px`;
+        wrap.style.top = `calc(50% - ${lineEndPad}px)`;
+        const begin = document.createElement("div");
+        begin.classList.add("linkLineBall");
+        begin.style.width = `${this.lineEndSize}px`;
+        begin.style.height = `${this.lineEndSize}px`;
+        wrap.appendChild(begin);
+        this.div.appendChild(wrap);
+      }
+
+      {
+        const wrap = document.createElement("div");
+        wrap.classList.add("linkLineEndWrap");
+        wrap.style.right = `-${lineEndPad}px`
+        wrap.style.padding = `${this.wrapperPad}px`;
+        wrap.style.top = `calc(50% - ${lineEndPad}px)`;
+        const end = document.createElement("div");
+        end.classList.add("linkLineBall");
+        end.style.width = `${this.lineEndSize}px`;
+        end.style.height = `${this.lineEndSize}px`;
+        wrap.appendChild(end);
+        this.div.appendChild(wrap);
+      }
     }
 
-    {
-      const wrap = document.createElement("div");
-      wrap.classList.add("linkLineEndWrap");
-      wrap.style.right = `-${lineEndPad}px`
-      wrap.style.padding = `${this.wrapperPad}px`;
-      wrap.style.top = `calc(50% - ${lineEndPad}px)`;
-      const end = document.createElement("div");
-      end.classList.add("linkLineBall");
-      end.style.width = `${this.lineEndSize}px`;
-      end.style.height = `${this.lineEndSize}px`;
-      wrap.appendChild(end);
-      this.div.appendChild(wrap);
+    let shift = 0;
+    if (onCursor) {
+      const size = Math.sqrt((this.length ** 2) / 2);
+      shift = size / 2;
     }
-
-    const size = Math.sqrt((this.length ** 2) / 2);
-    this.x = x - size / 2;
-    this.y = y + size / 2;
+    this.updateXY(
+      x - shift,
+      y + shift,
+    );
+    this.isMovable = isMovable;
     this.updatePos();
 
     return this;
   }
   onGrab(X, Y) {
+    if (!this.isMovable) {
+      return;
+    }
+
     const length = this.calculateLength(X, Y);
     if (length < 15) { // origin end
       this.switchOrigin();
       this.updatePos();
-      this.selectedPart = 1;
+      this.selectedPart = 2;
     } else if (length > (this.length - 15)) { // opposite end
-      this.selectedPart = 1;
+      this.selectedPart = 2;
     } else {
       {
         const rad = this.angle * Math.PI / 180;
@@ -116,19 +138,21 @@ class LineElement {
         this.midOffset.y = Math.sin(rad) * this.length / 2;
       }
 
-      this.selectedPart = 0; // middle
+      this.selectedPart = 1; // middle
     }
   }
   setOnUnselect() {
   }
   onMouseMove(X, Y) {
     switch (this.selectedPart) {
-      case 0: {
-        this.x = X - this.midOffset.x;
-        this.y = Y + this.midOffset.y;
+      case 1: {
+        this.updateXY(
+          X - this.midOffset.x,
+          Y + this.midOffset.y,
+        );
         break;
       }
-      case 1: {
+      case 2: {
         this.length = this.calculateLength(X, Y);
         this.angle = this.calculateAngle(X, Y);
         break;
@@ -137,4 +161,7 @@ class LineElement {
     this.updatePos();
   }
   onDelete() {}
+  finishGrab({ target }) {
+    this.selectedPart = null;
+  }
 }

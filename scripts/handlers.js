@@ -1,42 +1,28 @@
 graph.addEventListener("mousedown", (e) => {
-  let isElement = false
-  let target = e.target;
-  while (target !== graph) {
-    if (target.getAttribute("data-type") === "graph_element") {
-      isElement = true;
-      break;
-    }
-    if (target === nodeMenu.div) {
-      return;
-    }
-    target = target.parentElement;
-  }
+  const {x,y} = mouseEventToXY(e);
+  const target = getGraphTarget(e);
 
-  const unselect = selectedElement.el !== null;
-  if (unselect) {
-    // something was selected, remove selection
-    selectedElement.el = null;
+  if (nodeMenu.isShown && target !== nodeMenu.div) {
     nodeMenu.hide();
   }
-
-  const {x,y} = mouseEventToXY(e);
-
-  // nothing was selected, continue
-  if (isElement) {
+  if (target === nodeMenu.div) {
+    // nothing
+  } else if (target !== null) {
+    console.log(target);
     // start grabbing
     grabbedElement.el = elements[target.id];
     grabbedElement.el.onGrab(x, y);
-  } else if (!unselect) {
-    // graph action
-    const element = new selectedClass(x, y);
-    element.div.setAttribute("data-type", "graph_element");
-    elements[element.id] = element;
+  } else if (grabbedElement.el === null) {
+    // clicked on empty graph
+    const element = new selectedClass({ x, y });
 
     grabbedElement.isNew = true;
     grabbedElement.el = element;
     grabbedElement.movedTimes = 1;
 
-    graph.appendChild(element.div);
+    newGraphElement(element);
+  } else if (grabbedElement.el !== null) {
+    grabbedElement.el.finishGrab({ target });
   }
 });
 
@@ -55,14 +41,19 @@ graph.addEventListener("mousemove", (e) => {
 
 graph.addEventListener("mouseup", (e) => {
   const {x,y} = mouseEventToXY(e);
+  const target = getGraphTarget(e);
 
   if (grabbedElement.el !== null) {
     if (grabbedElement.movedTimes < 5 && !grabbedElement.isNew) {
       selectedElement.el = grabbedElement.el;
       nodeMenu.show(x, y, selectedElement.el.actions)
     }
+
+    grabbedElement.el.finishGrab({ target });
     grabbedElement.isNew = false;
     grabbedElement.movedTimes = 0;
     grabbedElement.el = null;
+  } else if (target === nodeMenu.div) {
+    nodeMenu.handleClick(e);
   }
 });
