@@ -1,4 +1,4 @@
-const selectedClass = CircleElement;
+const selectedClass = NetworkNode;
 
 const graph = new Graph();
 document.body.appendChild(graph.div);

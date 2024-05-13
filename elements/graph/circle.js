@@ -1,28 +1,3 @@
-const GraphNodeActions = {
-  Connect: "graph_node_action_connect",
-}
-
-function handleNodeConnect({ X, Y }) {
-  const { x, y } = graph.activeElement.el;
-  const line = new NodeLink({
-    x,
-    y,
-    isMovable: false,
-    onCursor: false,
-  });
-  const elementId = graph.newElement(line);
-
-  graph.startGrabbing({
-    x: X, y: Y,
-    initiatedElId: graph.activeElement.el.div.id,
-    elementId,
-  });
-  graph.activeElement.isNew = true;
-
-  line.selectedPart = 2;
-  line.onMouseMove(X, Y);
-}
-
 class CircleElement {
   static defaultSize = 20;
 
@@ -34,7 +9,6 @@ class CircleElement {
   x;
   y;
   actions = [
-    [GraphNodeActions.Connect, "Connect", handleNodeConnect],
   ];
 
   // private
@@ -58,7 +32,7 @@ class CircleElement {
     return this;
   }
 
-  onGrab(initiatedElId) {
+  onGrab({ initiatedElId, x, y }) {
   }
 
   onMouseMove(x, y) {
@@ -68,11 +42,6 @@ class CircleElement {
   }
 
   onDelete() {
-    console.log(`connections for ${this.div.id}`);
-    const connections = network.getConnections(this.div.id);
-    for (const connection of connections) {
-      graph.deleteElement(connection);
-    }
   }
 
   finishGrab({ target }) {}
