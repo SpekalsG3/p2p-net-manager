@@ -40,4 +40,41 @@ class NetworkNode extends CircleElement {
       graph.deleteElement(connection);
     }
   }
+
+  onGrab({ initiatedElId, x, y }) {
+    super.onGrab({ initiatedElId, x, y });
+
+    const connections = network.getConnections(this.div.id);
+    for (const connection of connections) {
+      const { from, to } = network.connectionsToNodes[connection];
+      const el = graph.elements[connection];
+
+      if (this.div.id === from) {
+        el.switchOrigin();
+        el.updatePos();
+        network.connectionsToNodes[connection] = {
+          from: to,
+          to: from,
+        }
+      }
+      el.selectedPart = 2;
+    }
+  }
+
+  onMouseMove(x, y) {
+    super.onMouseMove(x, y);
+
+    const connections = network.getConnections(this.div.id);
+    for (const connection of connections) {
+      graph.elements[connection].onMouseMove(x, y);
+    }
+  }
+
+  finishGrab({ target }) {
+    const connections = network.getConnections(this.div.id);
+    for (const connection of connections) {
+      const el = graph.elements[connection];
+      el.selectedPart = null;
+    }
+  }
 }
