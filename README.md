@@ -17,6 +17,15 @@ again, I need to store all the elements and access them to read/write data.
 That's a huge criteria and I don't know of such libraries. Research might take
 longer.
 
+# How to run
+
+Visit [GitHub Page](https://spekalsg3.github.io/p2p-net-manager/index.html)
+for simulation software.
+
+Or if you want to connect to real network, then clone and *TODO*. Simulation
+software will be also available by simply opening [index.html](./index.html)
+in you browser.
+
 # WIP...
 
 First goal is to implement simulation of new node connecting to existing network
