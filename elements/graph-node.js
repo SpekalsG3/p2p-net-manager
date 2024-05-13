@@ -10,14 +10,13 @@ function handleNodeConnect({ X, Y }) {
     isMovable: false,
     onCursor: false,
   });
-  graph.newElement(line);
+  const elementId = graph.newElement(line);
 
-  line.onGrab(X, Y);
   line.selectedPart = 2;
   line.onMouseMove(X, Y);
 
-  graph.activeElement.el = line;
-  graph.activeElement.isGrabbed = true;
+  graph.startGrabbing(elementId, X, Y);
+  graph.activeElement.isNew = true;
 }
 
 class GraphNode {
@@ -56,7 +55,6 @@ class GraphNode {
     return this;
   }
   onGrab(X, Y) {
-    return true;
   }
   setOnUnselect() {
   }

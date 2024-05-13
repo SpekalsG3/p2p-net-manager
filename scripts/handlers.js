@@ -10,20 +10,18 @@ graph.div.addEventListener("mousedown", (e) => {
   }
   if (target === nodeMenu.div) {
     // nothing
-  } else if (target !== null && !graph.activeElement.isGrabbed) {
-    // start grabbing
-    graph.activeElement.el = graph.elements[target.id];
-    graph.activeElement.isGrabbed = graph.activeElement.el.onGrab(x, y);
+  } else if (target !== null) {
+    if (!graph.activeElement.isGrabbed) {
+      // start grabbing
+      graph.startGrabbing(target.id, x, y);
+    }
   } else if (!graph.activeElement.el) {
     // clicked on empty graph, create selected class
     const element = new selectedClass({ x, y });
+    const elementId = graph.newElement(element);
 
+    graph.startGrabbing(elementId, x, y);
     graph.activeElement.isNew = true;
-    graph.activeElement.el = element;
-    graph.activeElement.movedTimes = 1;
-    graph.activeElement.isGrabbed = true;
-
-    graph.newElement(element);
   }
 });
 
@@ -32,7 +30,7 @@ graph.div.addEventListener("mousemove", (e) => {
 
   if (graph.activeElement.isGrabbed) {
     graph.activeElement.movedTimes++;
-    if (graph.activeElement.movedTimes > 5) {
+    if (graph.activeElement.movedTimes > Graph.grabbedMovesThreshold) {
       graph.activeElement.el.onMouseMove(x, y);
     }
   } else if (graph.activeElement.el) {
@@ -47,17 +45,6 @@ graph.div.addEventListener("mouseup", (e) => {
   if (target === nodeMenu.div) {
     nodeMenu.handleClick(e);
   } else if (graph.activeElement.el) {
-    if (graph.activeElement.movedTimes < 5 && !graph.activeElement.isNew) {
-      // means user just clicked on element, select it
-      nodeMenu.show(x, y, graph.activeElement.el.actions)
-    } else {
-      // user was actually grabbing and moving element
-      graph.activeElement.el.finishGrab({ target });
-      graph.activeElement.el = null;
-    }
-
-    graph.activeElement.isGrabbed = false;
-    graph.activeElement.isNew = false;
-    graph.activeElement.movedTimes = 0;
+    graph.stopGrabbing(target, x, y);
   }
 });

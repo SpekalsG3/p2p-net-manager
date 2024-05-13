@@ -123,10 +123,8 @@ class LineElement {
   }
 
   onGrab(X, Y) {
-    this.div.style.pointerEvents = "none";
-
     if (!this.isMovable) {
-      return false;
+      return;
     }
 
     const length = this.calculateLength(X, Y);
@@ -145,8 +143,6 @@ class LineElement {
 
       this.selectedPart = 1; // middle
     }
-
-    return true;
   }
 
   setOnUnselect() {
@@ -175,12 +171,13 @@ class LineElement {
   onDelete() {}
 
   finishGrab({ target }) {
-    this.div.style.pointerEvents = "unset";
     this.selectedPart = null;
 
     const el = graph.elements[target?.id];
     if (target === null || el instanceof LineElement) {
-      graph.deleteElement(this);
+      if (graph.activeElement.isNew) {
+        graph.deleteElement(this);
+      }
       return;
     }
 
