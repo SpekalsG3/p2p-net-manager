@@ -88,6 +88,7 @@ class Graph {
       nodeMenu.show(x, y, this.activeElement.el.actions);
     }
 
+    this.activeElement.influence = {};
     this.activeElement.isGrabbed = false;
     this.activeElement.isNew = false;
     this.activeElement.movedTimes = 0;

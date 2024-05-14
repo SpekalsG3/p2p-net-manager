@@ -172,6 +172,5 @@ class LineElement {
   }
 
   finishGrab({ target }) {
-    this.selectedPart = null;
   }
 }
