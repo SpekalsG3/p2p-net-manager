@@ -1,3 +1,9 @@
+const GrabIntent = {
+  None: 0,
+  Move: 1,
+  Resize: 2,
+};
+
 class Graph {
   static grabbedMovesThreshold = 3;
 
@@ -7,6 +13,7 @@ class Graph {
   // public
   div;
   activeElement = {
+    influence: {},
     isGrabbed: false,
     movedTimes: 0,
     isNew: false,
@@ -62,7 +69,7 @@ class Graph {
   startGrabbing({ initiatedElId, x, y, elementId }) {
     this.activeElement.el = this.elements[elementId];
 
-    this.activeElement.el.onGrab({ initiatedElId, x, y });
+    this.activeElement.influence = this.activeElement.el.onGrab({ initiatedElId, x, y });
     this.activeElement.el.div.style.pointerEvents = "none";
 
     this.activeElement.isGrabbed = true;

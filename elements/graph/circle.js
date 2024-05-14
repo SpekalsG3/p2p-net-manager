@@ -40,13 +40,18 @@ class CircleElement {
   }
 
   onGrab({ initiatedElId, x, y }) {
+    return {
+      [this.div.id]: GrabIntent.Move,
+    };
   }
 
-  onMouseMove(x, y) {
+  onMove(x, y) {
     this.x = x;
     this.y = y;
     this.updatePos();
   }
+
+  onResize(x, y) {}
 
   onDelete() {
   }

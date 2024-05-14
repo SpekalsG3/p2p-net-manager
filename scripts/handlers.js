@@ -42,7 +42,14 @@ graph.div.addEventListener("mousemove", (e) => {
   if (graph.activeElement.isGrabbed) {
     graph.activeElement.movedTimes++;
     if (graph.activeElement.movedTimes > Graph.grabbedMovesThreshold) {
-      graph.activeElement.el.onMouseMove(x, y);
+      for (const influencedId in graph.activeElement.influence) {
+        const intent = graph.activeElement.influence[influencedId];
+        switch (intent) {
+          case GrabIntent.None: break;
+          case GrabIntent.Move: graph.elements[influencedId].onMove(x, y); break;
+          case GrabIntent.Resize: graph.elements[influencedId].onResize(x, y); break;
+        }
+      }
     }
   } else if (graph.activeElement.el) {
     // shouldn't do anything
@@ -63,3 +70,10 @@ graph.div.addEventListener("mouseup", (e) => {
     graph.stopGrabbing(target, x, y);
   }
 });
+
+// graph.div.addEventListener("wheel", (e) => {
+//   for (const elementId in graph.elements) {
+//     graph.elements[elementId]
+//   }
+//   console.log(e.wheelDeltaX, e.wheelDeltaY);
+// })

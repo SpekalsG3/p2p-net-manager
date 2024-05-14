@@ -19,12 +19,17 @@ class NodeLink extends LineElement {
   }
 
   onGrab({ initiatedElId, x, y }) {
-    // super.onGrab(initiatedElId);
     this.connectedFrom = initiatedElId;
+    // super.onGrab(initiatedElId);
+    return {};
   }
 
-  onMouseMove(X, Y) {
-    super.onMouseMove(X, Y);
+  onMove(X, Y) {
+    super.onMove(X, Y);
+  }
+
+  onResize(X, Y) {
+    super.onResize(X, Y);
   }
 
   onDelete() {

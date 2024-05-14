@@ -11,7 +11,6 @@ class LineElement {
   wrapperPad = LineElement.defaultWrapperPad;
   lineEndSize = LineElement.defaultLineEndSize;
   angle = LineElement.defaultAngle;
-  selectedPart = null; // 1 - middle, 2 - one of the ends
   isOriginBegin = false;
   midOffset = { x: 0, y: 0 }
 
@@ -132,40 +131,40 @@ class LineElement {
 
   onGrab({ initiatedElId, x, y }) {
     const length = this.calculateLength(x, y);
+
+    let intent;
     if (length < 15) { // origin end
       this.switchOrigin();
       this.updatePos();
-      this.selectedPart = 2;
+      intent = GrabIntent.Resize;
     } else if (length > (this.length - 15)) { // opposite end
-      this.selectedPart = 2;
+      intent = GrabIntent.Resize;
     } else {
-      {
-        const rad = this.angle * Math.PI / 180;
-        this.midOffset.x = Math.cos(rad) * this.length / 2;
-        this.midOffset.y = Math.sin(rad) * this.length / 2;
-      }
+      const rad = this.angle * Math.PI / 180;
+      this.midOffset.x = Math.cos(rad) * this.length / 2;
+      this.midOffset.y = Math.sin(rad) * this.length / 2;
 
-      this.selectedPart = 1; // middle
+      intent = GrabIntent.Move;
+    }
+
+    return {
+      [this.div.id]: intent,
     }
   }
 
-  onMouseMove(X, Y) {
-    switch (this.selectedPart) {
-      case 1: {
-        const {x,y} = this.adjustXY(
-          X - this.midOffset.x,
-          Y + this.midOffset.y,
-        );
-        this.x = x;
-        this.y = y;
-        break;
-      }
-      case 2: {
-        this.length = this.calculateLength(X, Y);
-        this.angle = this.calculateAngle(X, Y);
-        break;
-      }
-    }
+  onResize(X, Y) {
+    this.length = this.calculateLength(X, Y);
+    this.angle = this.calculateAngle(X, Y);
+    this.updatePos();
+  }
+
+  onMove(X, Y) {
+    const { x, y } = this.adjustXY(
+      X - this.midOffset.x,
+      Y + this.midOffset.y,
+    );
+    this.x = x;
+    this.y = y;
     this.updatePos();
   }
 

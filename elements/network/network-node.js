@@ -19,8 +19,10 @@ function handleNodeConnect({ X, Y }) {
   });
   graph.activeElement.isNew = true;
 
-  line.selectedPart = 2;
-  line.onMouseMove(X, Y);
+  graph.activeElement.influence = {
+    [line.div.id]: GrabIntent.Resize,
+  }
+  line.onResize(X, Y);
 }
 
 class NetworkNode extends CircleElement {
@@ -46,32 +48,34 @@ class NetworkNode extends CircleElement {
   }
 
   onGrab({ initiatedElId, x, y }) {
-    super.onGrab({ initiatedElId, x, y });
+    const influence = super.onGrab({ initiatedElId, x, y });
 
     const connections = network.getConnections(this.div.id);
     for (const connection of connections) {
       const { from, to } = network.connectionsToNodes[connection];
-      const el = graph.elements[connection];
+      const link = graph.elements[connection];
 
       if (this.div.id === from) {
-        el.switchOrigin();
-        el.updatePos();
+        link.switchOrigin();
+        link.updatePos();
         network.connectionsToNodes[connection] = {
           from: to,
           to: from,
         }
       }
-      el.selectedPart = 2;
+
+      influence[link.div.id] = GrabIntent.Resize;
     }
+
+    return influence;
   }
 
-  onMouseMove(x, y) {
-    super.onMouseMove(x, y);
+  onMove(x, y) {
+    super.onMove(x, y);
+  }
 
-    const connections = network.getConnections(this.div.id);
-    for (const connection of connections) {
-      graph.elements[connection].onMouseMove(x, y);
-    }
+  onResize(x, y) {
+    super.onResize(x, y);
   }
 
   finishGrab({ target }) {
