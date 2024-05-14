@@ -1,5 +1,5 @@
 class CircleElement {
-  static defaultSize = 20;
+  static defaultSize = 40;
 
   // private
   size = CircleElement.defaultSize;
@@ -17,13 +17,20 @@ class CircleElement {
     this.div.style.top  = `${this.y - this.size / 2}px`;
   }
 
-  // interface
-  constructor({ x, y }) {
-    this.div = document.createElement("div");
+  // public
+  static generateDiv() {
+    const div = document.createElement("div");
 
-    this.div.style.width = `${this.size}px`;
-    this.div.style.height = `${this.size}px`;
-    this.div.classList.add("graphNode");
+    div.style.width = `${CircleElement.defaultSize}px`;
+    div.style.height = `${CircleElement.defaultSize}px`;
+    div.classList.add("graphNode");
+
+    return div;
+  }
+
+  constructor({ x, y }) {
+    this.div = CircleElement.generateDiv();
+    this.div.style.position = "absolute";
 
     this.x = x;
     this.y = y;

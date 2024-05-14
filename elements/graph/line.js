@@ -1,13 +1,16 @@
 class LineElement {
-  static defaultWidth = 3;
+  static defaultWidth = 5;
   static defaultLength = 100;
+  static defaultWrapperPad = 6;
+  static defaultLineEndSize = 10;
+  static defaultAngle = 0;
 
   // private
   width = LineElement.defaultWidth;
   length = LineElement.defaultLength;
-  wrapperPad = 6;
-  lineEndSize = 10;
-  angle = 45;
+  wrapperPad = LineElement.defaultWrapperPad;
+  lineEndSize = LineElement.defaultLineEndSize;
+  angle = LineElement.defaultAngle;
   selectedPart = null; // 1 - middle, 2 - one of the ends
   isOriginBegin = false;
   midOffset = { x: 0, y: 0 }
@@ -29,8 +32,8 @@ class LineElement {
   updatePos() {
     this.div.style.left = `${this.x}px`;
     this.div.style.top  = `${this.y}px`; // todo: adjust for LinkElement padding
-    this.div.firstChild.style.width = `${this.length}px`;
-    this.div.firstChild.style.height = `${this.width}px`;
+    this.div.firstElementChild.style.width = `${this.length}px`;
+    this.div.firstElementChild.style.height = `${this.width}px`;
     this.div.style.transform = `rotate(${-this.angle}deg)`;
   }
   switchOrigin() {
@@ -42,7 +45,7 @@ class LineElement {
     this.isOriginBegin = !this.isOriginBegin;
   }
   calculateAngle(X, Y) {
-    const {x,y} = this.adjustXY(X - this.x, Y - this.y);
+    const { x, y } = this.adjustXY(X - this.x, Y - this.y);
     let pad = 0;
     if (x < 0) {
       pad = 180;
@@ -54,51 +57,62 @@ class LineElement {
     return Math.sqrt(x * x + y * y);
   }
 
-  // interface
-  constructor({
-    x,
-    y,
-    onCursor = true,
-  }) {
-    this.div = document.createElement("div");
+  // public
+  static generateDiv() {
+    const div = document.createElement("div");
 
-    this.div.classList.add("linkElement");
-    this.div.style.padding = `${this.wrapperPad}px 0`
+    div.classList.add("linkElement");
+    div.style.padding = `${LineElement.defaultWrapperPad}px 0`
 
     {
       const line = document.createElement("div");
       line.classList.add("linkLine");
-      this.div.appendChild(line);
+      div.appendChild(line);
     }
 
-    const lineEndPad = (this.wrapperPad * 2 + this.lineEndSize) / 2;
+    const lineEndPad = (LineElement.defaultWrapperPad * 2 + LineElement.defaultLineEndSize) / 2;
     {
       const wrap = document.createElement("div");
       wrap.classList.add("linkLineBeginWrap");
       wrap.style.left = `-${lineEndPad}px`;
-      wrap.style.padding = `${this.wrapperPad}px`;
+      wrap.style.padding = `${LineElement.defaultWrapperPad}px`;
       wrap.style.top = `calc(50% - ${lineEndPad}px)`;
       const begin = document.createElement("div");
       begin.classList.add("linkLineBall");
-      begin.style.width = `${this.lineEndSize}px`;
-      begin.style.height = `${this.lineEndSize}px`;
+      begin.style.width = `${LineElement.defaultLineEndSize}px`;
+      begin.style.height = `${LineElement.defaultLineEndSize}px`;
       wrap.appendChild(begin);
-      this.div.appendChild(wrap);
+      div.appendChild(wrap);
     }
 
     {
       const wrap = document.createElement("div");
       wrap.classList.add("linkLineEndWrap");
       wrap.style.right = `-${lineEndPad}px`
-      wrap.style.padding = `${this.wrapperPad}px`;
+      wrap.style.padding = `${LineElement.defaultWrapperPad}px`;
       wrap.style.top = `calc(50% - ${lineEndPad}px)`;
       const end = document.createElement("div");
       end.classList.add("linkLineBall");
-      end.style.width = `${this.lineEndSize}px`;
-      end.style.height = `${this.lineEndSize}px`;
+      end.style.width = `${LineElement.defaultLineEndSize}px`;
+      end.style.height = `${LineElement.defaultLineEndSize}px`;
       wrap.appendChild(end);
-      this.div.appendChild(wrap);
+      div.appendChild(wrap);
     }
+
+    div.firstElementChild.style.width = `${LineElement.defaultLength}px`;
+    div.firstElementChild.style.height = `${LineElement.defaultWidth}px`;
+    div.style.transform = `rotate(${-LineElement.defaultAngle}deg)`;
+
+    return div;
+  }
+
+  constructor({
+    x,
+    y,
+    onCursor = true,
+  }) {
+    this.div = LineElement.generateDiv();
+    this.div.style.position = "absolute";
 
     let shift = 0;
     if (onCursor) {

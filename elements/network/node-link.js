@@ -3,6 +3,13 @@ class NodeLink extends LineElement {
   connectedFrom;
 
   // public
+  static generateDiv() {
+    return LineElement.generateDiv({
+      wrapperPad: LineElement.defaultLength,
+      lineEndSize: LineElement.defaultLength,
+    });
+  }
+
   constructor({ x, y }) {
     super({
       x,

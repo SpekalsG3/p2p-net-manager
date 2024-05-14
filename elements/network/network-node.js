@@ -30,6 +30,10 @@ class NetworkNode extends CircleElement {
   ]
 
   // public
+  static generateDiv() {
+    return CircleElement.generateDiv();
+  }
+
   constructor({ x, y }) {
     super({ x, y });
   }

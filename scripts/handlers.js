@@ -8,7 +8,10 @@ graph.div.addEventListener("mousedown", (e) => {
     nodeMenu.hide();
     return;
   }
-  if (target === nodeMenu.div) {
+  if (
+    target === nodeMenu.div
+    || target === networkMenu.div
+  ) {
     // nothing
   } else if (target !== null) {
     if (!graph.activeElement.isGrabbed) {
@@ -50,8 +53,12 @@ graph.div.addEventListener("mouseup", (e) => {
   const {x,y} = mouseEventToXY(e);
   const target = graph.getTarget(e);
 
-  if (target === nodeMenu.div) {
+  if (
+    target === nodeMenu.div
+  ) {
     nodeMenu.handleClick(e);
+  } else if (target === networkMenu.div) {
+    networkMenu.handleClick(e);
   } else if (graph.activeElement.el) {
     graph.stopGrabbing(target, x, y);
   }

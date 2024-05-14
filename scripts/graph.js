@@ -44,9 +44,11 @@ class Graph {
   getTarget(e) {
     let target = e.target;
     while (true) {
-      if (target.classList.contains("graphElement")) {
-        break;
-      } else if (target === nodeMenu.div) {
+      if (
+        target.classList.contains("graphElement")
+        || target === nodeMenu.div
+        || target === networkMenu.div
+      ) {
         break;
       } else if (target === this.div) {
         target = null;

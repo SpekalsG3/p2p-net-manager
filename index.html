@@ -2,6 +2,11 @@
 <head>
   <title>DCMST Algorithm</title>
   <style>
+    :root {
+        --bg-color: #1c1c1c;
+        --bg-color-hover: #2e2e2e;
+        --border: #b1b1b1;
+    }
     body {
         margin: 0;
         color: white;
@@ -9,7 +14,7 @@
     #graph {
         width: 100%;
         height: 100%;
-        background: #1c1c1c;
+        background: var(--bg-color);
         overflow: hidden;
         position: relative;
         user-select: none;
@@ -18,7 +23,6 @@
         z-index: 1;
     }
     .graphNode {
-        position: absolute;
         border-radius: 50%;
         background: #00c300;
         cursor: pointer;
@@ -27,7 +31,6 @@
         cursor: grabbing;
     }
     .linkElement {
-        position: absolute;
         cursor: pointer;
         transform-origin: center left;
     }
@@ -46,22 +49,87 @@
     #nodeMenu {
         position: absolute;
         border-radius: 5px;
-        border: 1px solid #b1b1b1;
+        border: 1px solid var(--border);
         padding: 5px;
         display: none;
-        background: #1c1c1c;
-        z-index: 2;
+        background: var(--bg-color);
+        z-index: 3;
     }
     .nodeMenuAction {
-        border-bottom: 1px solid #b1b1b1;
+        border-bottom: 1px solid var(--border);
         transition: background-color .2s;
         cursor: pointer;
     }
     .nodeMenuAction:hover {
-        background-color: #2e2e2e;
+        background-color: var(--bg-color-hover);
     }
     .nodeMenuAction + .nodeMenuAction {
         margin-top: 5px;
+    }
+
+    #networkMenu {
+        position: absolute;
+        border-radius: 10px;
+        width: 400px;
+        height: calc(100% - 22px);
+        top: 10px;
+        right: 10px;
+        background-color: var(--bg-color);
+        border: 1px solid var(--border);
+        z-index: 2;
+        overflow: hidden;
+    }
+    #networkMenu .tabs {
+        display: flex;
+        font-size: 20px;
+    }
+    #networkMenu .tabs .tabsOne {
+        position: relative;
+        min-width: fit-content;
+        padding: 6px;
+        cursor: pointer;
+    }
+    #networkMenu .tabs .tabsOne:after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        width: 80%;
+        left: 10%;
+    }
+    #networkMenu .tabs .tabsSelected:after {
+        border-bottom: 1px solid var(--border);
+    }
+    #networkMenu .tabs .tabsOne + .tabsOne {
+        margin-left: 10px;
+    }
+    #networkMenu .content {
+        margin-top: 10px;
+    }
+    #networkMenu .content .list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: auto;
+    }
+    #networkMenu .content .list .listElement {
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+    }
+    #networkMenu .content .list .listElement .listElementPreview {
+        padding: 10px;
+        flex: 1;
+        display: flex;
+        align-items: center;
+    }
+    #networkMenu .content .list .listElement .listElementPreview .listElementPreviewInner {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #networkMenu .content .list .listElement .listElementName {
+        text-align: center;
     }
   </style>
 </head>
@@ -77,6 +145,8 @@
 <script src="scripts/node-menu.js"></script>
 <script src="scripts/graph.js"></script>
 <script src="scripts/network.js"></script>
+<script src="scripts/network-menu/entities-menu.js"></script>
+<script src="scripts/network-menu"></script>
 
 <script src="scripts/globals.js"></script>
 <script src="scripts/handlers.js"></script>
