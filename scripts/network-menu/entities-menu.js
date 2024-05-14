@@ -2,7 +2,6 @@ class EntitiesMenu {
   // private
   elements = [
     ["Network Node", NetworkNode],
-    ["Line Element", LineElement],
   ];
 
   // public
