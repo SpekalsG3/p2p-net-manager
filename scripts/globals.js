@@ -1,11 +1,15 @@
 const selectedClass = NetworkNode;
 
-const graph = new Graph();
+const body = document.body.getBoundingClientRect();
+const graph = new Graph({
+  height: body.height,
+  width: body.width,
+});
 document.body.appendChild(graph.div);
 
 const nodeMenu = new NodeMenu();
-graph.div.appendChild(nodeMenu.div);
+document.body.appendChild(nodeMenu.div);
 
 const network = new Network();
 const networkMenu = new NetworkMenu();
-graph.div.appendChild(networkMenu.div);
+document.body.appendChild(networkMenu.div);

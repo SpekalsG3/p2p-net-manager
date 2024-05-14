@@ -9,8 +9,18 @@ class Graph {
 
   // private
   elements = {};
+  originalHeight;
+  originalWidth;
 
   // public
+  moveEase = 1.2;
+  x = 0;
+  y = 0;
+  zoomEase = 100;
+  zoom = 1;
+  height
+  width
+
   div;
   activeElement = {
     influence: {},
@@ -20,10 +30,26 @@ class Graph {
     el: null,
   };
 
-  constructor() {
+  constructor({ width, height }) {
     this.div = document.createElement("div");
     this.div.id = "graph";
+    this.height = height;
+    this.width = width;
+
+    this.originalHeight = this.height;
+    this.originalWidth = this.width;
+
+    this.render();
+
     return this;
+  }
+
+  render() {
+    this.div.style.height = `${this.height}px`;
+    this.div.style.width = `${this.width}px`;
+    this.div.style.top = `${this.y}px`;
+    this.div.style.left = `${this.x}px`;
+    this.div.style.transform = `scale(${this.zoom})`
   }
 
   newElement(element) {
@@ -48,13 +74,21 @@ class Graph {
     delete this.elements[element.div.id];
   }
 
+  getEventCoordinates(e) {
+    const dx = this.width * (1 - this.zoom) / 2;
+    const x = (e.clientX - dx - this.x) / (this.zoom);
+
+    const dy = this.height * (1 - this.zoom) / 2;
+    const y = (e.clientY - dy - this.y) / (this.zoom);
+
+    return { x, y }
+  }
+
   getTarget(e) {
     let target = e.target;
     while (true) {
       if (
         target.classList.contains("graphElement")
-        || target === nodeMenu.div
-        || target === networkMenu.div
       ) {
         break;
       } else if (target === this.div) {
@@ -76,21 +110,26 @@ class Graph {
     this.activeElement.movedTimes = 1;
   }
 
-  stopGrabbing(target, x, y) {
+  stopGrabbing(target) {
     this.activeElement.el.div.style.pointerEvents = "unset";
 
+    let hasMoved
     if (this.activeElement.isNew || this.activeElement.movedTimes > Graph.grabbedMovesThreshold) {
       // user was moving an element
       this.activeElement.el.finishGrab({ target });
       this.activeElement.el = null;
+      hasMoved = true;
     } else {
-      // user clicked on existing element, select it
-      nodeMenu.show(x, y, this.activeElement.el.actions);
+      // user clicked on existing element, no grab happened
+      hasMoved = false
     }
 
+    // cleanup
     this.activeElement.influence = {};
     this.activeElement.isGrabbed = false;
     this.activeElement.isNew = false;
     this.activeElement.movedTimes = 0;
+
+    return hasMoved;
   }
 }

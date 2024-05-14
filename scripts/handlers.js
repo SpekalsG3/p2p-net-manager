@@ -1,6 +1,6 @@
 // don't want to bloat graph.js
 graph.div.addEventListener("mousedown", (e) => {
-  const {x,y} = mouseEventToXY(e);
+  const {x, y} = graph.getEventCoordinates(e);
   const target = graph.getTarget(e);
 
   if (nodeMenu.isShown && target !== nodeMenu.div) {
@@ -8,12 +8,7 @@ graph.div.addEventListener("mousedown", (e) => {
     nodeMenu.hide();
     return;
   }
-  if (
-    target === nodeMenu.div
-    || target === networkMenu.div
-  ) {
-    // nothing
-  } else if (target !== null) {
+  if (target !== null) {
     if (!graph.activeElement.isGrabbed) {
       // start grabbing
       graph.startGrabbing({
@@ -37,7 +32,7 @@ graph.div.addEventListener("mousedown", (e) => {
 });
 
 graph.div.addEventListener("mousemove", (e) => {
-  const {x,y} = mouseEventToXY(e);
+  const {x, y} = graph.getEventCoordinates(e);
 
   if (graph.activeElement.isGrabbed) {
     graph.activeElement.movedTimes++;
@@ -57,23 +52,33 @@ graph.div.addEventListener("mousemove", (e) => {
 });
 
 graph.div.addEventListener("mouseup", (e) => {
-  const {x,y} = mouseEventToXY(e);
   const target = graph.getTarget(e);
 
-  if (
-    target === nodeMenu.div
-  ) {
-    nodeMenu.handleClick(e);
-  } else if (target === networkMenu.div) {
-    networkMenu.handleClick(e);
-  } else if (graph.activeElement.el) {
-    graph.stopGrabbing(target, x, y);
+  if (graph.activeElement.el) {
+    const hasMoved = graph.stopGrabbing(target);
+    if (!hasMoved) {
+      // element hasn't moved, means user just clicked
+      nodeMenu.show(e.clientX, e.clientY, graph.activeElement.el.actions);
+    }
   }
 });
 
-// graph.div.addEventListener("wheel", (e) => {
-//   for (const elementId in graph.elements) {
-//     graph.elements[elementId]
-//   }
-//   console.log(e.wheelDeltaX, e.wheelDeltaY);
-// })
+nodeMenu.div.addEventListener("click", (e) => {
+  nodeMenu.handleClick(e);
+});
+networkMenu.div.addEventListener("click", (e) => {
+  networkMenu.handleClick(e);
+})
+
+document.body.addEventListener("wheel", (e) => {
+  e.preventDefault();
+
+  if (e.ctrlKey) {
+    graph.zoom -= graph.zoom * e.deltaY / graph.zoomEase;
+  } else {
+    graph.x -= e.deltaX / graph.moveEase;
+    graph.y -= e.deltaY / graph.moveEase;
+  }
+
+  graph.render()
+}, { passive: false })

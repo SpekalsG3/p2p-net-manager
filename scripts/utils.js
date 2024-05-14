@@ -11,12 +11,6 @@ function showElement(div) {
   div.style.display = "block";
 }
 
-function mouseEventToXY(e) {
-  const x = e.clientX;
-  const y = e.clientY;
-  return { x, y }
-}
-
 function stressTest() {
   function spawnNode() {
     const x = Math.floor(Math.random() * sizes.width);
@@ -41,5 +35,24 @@ function stressTest() {
       link.finishGrab({ target: nodes[n].div })
     }
     nodes.push(node);
+  }
+}
+
+function createGrid() {
+  const div = document.createElement("div");
+  div.style.position = "absolute";
+  div.style.top = "0";
+  div.style.left = "0";
+  div.style.display = "flex";
+  div.style.flexWrap = "wrap";
+  div.style.alignContent = "start";
+  div.style.pointerEvents = "none";
+  document.body.appendChild(div);
+  for (let i = 0; i < 150; i++) {
+    const measure = document.createElement("div");
+    measure.style.width = "100px";
+    measure.style.height = "100px";
+    measure.style.outline = "1px dashed red";
+    div.appendChild(measure);
   }
 }

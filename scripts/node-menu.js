@@ -30,15 +30,17 @@ class NodeMenu {
     return this;
   }
   handleClick(e) {
-    const {x,y} = mouseEventToXY(e);
+    const {x,y} = graph.getEventCoordinates(e);
 
     if (e.target.classList.contains("nodeMenuAction")) {
       const action = e.target.getAttribute("data-action");
       const firedAction = [...this.globalActions, ...this.addedActions]
         .find(([dataAction, _0, _1]) => dataAction === action);
+
       if (!firedAction) {
         throw new Error(`Unknown data-action "${action}"`);
       }
+
       firedAction[2]({ X: x, Y: y });
       this.hide();
     }
