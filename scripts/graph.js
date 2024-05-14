@@ -9,8 +9,6 @@ class Graph {
 
   // private
   elements = {};
-  originalHeight;
-  originalWidth;
 
   // public
   moveEase = 1.2;
@@ -18,8 +16,8 @@ class Graph {
   y = 0;
   zoomEase = 100;
   zoom = 1;
-  height
-  width
+  height;
+  width;
 
   div;
   activeElement = {
@@ -33,23 +31,24 @@ class Graph {
   constructor({ width, height }) {
     this.div = document.createElement("div");
     this.div.id = "graph";
+
+    const origin = document.createElement("div");
+    origin.classList.add("graphOrigin");
+    this.div.appendChild(origin);
+
     this.height = height;
     this.width = width;
-
-    this.originalHeight = this.height;
-    this.originalWidth = this.width;
-
+    this.x = width / 2;
+    this.y = height / 2;
     this.render();
 
     return this;
   }
 
   render() {
-    this.div.style.height = `${this.height}px`;
-    this.div.style.width = `${this.width}px`;
-    this.div.style.top = `${this.y}px`;
-    this.div.style.left = `${this.x}px`;
-    this.div.style.transform = `scale(${this.zoom})`
+    this.div.firstElementChild.style.left = `${this.x}px`;
+    this.div.firstElementChild.style.top = `${this.y}px`;
+    this.div.firstElementChild.style.transform = `scale(${this.zoom})`
   }
 
   newElement(element) {
@@ -62,7 +61,7 @@ class Graph {
     element.div.id = id;
     this.elements[id] = element;
 
-    this.div.appendChild(element.div);
+    this.div.firstElementChild.appendChild(element.div);
 
     return id;
   }
@@ -70,16 +69,13 @@ class Graph {
   deleteElement(elementId) {
     const element = this.elements[elementId];
     element.onDelete();
-    this.div.removeChild(element.div);
+    this.div.firstElementChild.removeChild(element.div);
     delete this.elements[element.div.id];
   }
 
   getEventCoordinates(e) {
-    const dx = this.width * (1 - this.zoom) / 2;
-    const x = (e.clientX - dx - this.x) / (this.zoom);
-
-    const dy = this.height * (1 - this.zoom) / 2;
-    const y = (e.clientY - dy - this.y) / (this.zoom);
+    const x = (e.clientX - this.x) / this.zoom;
+    const y = (e.clientY - this.y) / this.zoom;
 
     return { x, y }
   }
