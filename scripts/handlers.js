@@ -74,7 +74,10 @@ document.body.addEventListener("wheel", (e) => {
   e.preventDefault();
 
   if (e.ctrlKey) {
-    graph.zoom -= graph.zoom * e.deltaY / graph.zoomEase;
+    const dz = e.deltaY / graph.zoomEase;
+    graph.zoom -= graph.zoom * dz;
+    graph.x -= (graph.x - e.clientX) * dz;
+    graph.y -= (graph.y - e.clientY) * dz;
   } else {
     graph.x -= e.deltaX / graph.moveEase;
     graph.y -= e.deltaY / graph.moveEase;
