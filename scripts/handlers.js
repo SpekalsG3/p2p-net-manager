@@ -1,9 +1,4 @@
 // don't want to bloat graph.js
-window.addEventListener("resize", () => {
-  const body = document.body.getBoundingClientRect();
-  graph.width = body.width;
-  graph.height = body.height;
-})
 graph.div.addEventListener("mousedown", (e) => {
   const {x, y} = graph.getEventCoordinates(e);
   const target = graph.getTarget(e);

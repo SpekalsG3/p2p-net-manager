@@ -16,8 +16,6 @@ class Graph {
   y = 0;
   zoomEase = 100;
   zoom = 1;
-  height;
-  width;
 
   div;
   activeElement = {
@@ -28,7 +26,7 @@ class Graph {
     el: null,
   };
 
-  constructor({ width, height }) {
+  constructor() {
     this.div = document.createElement("div");
     this.div.id = "graph";
 
@@ -36,10 +34,9 @@ class Graph {
     origin.classList.add("graphOrigin");
     this.div.appendChild(origin);
 
-    this.height = height;
-    this.width = width;
-    this.x = width / 2;
-    this.y = height / 2;
+    const body = document.body.getBoundingClientRect();
+    this.x = body.width / 2;
+    this.y = body.height / 2;
     this.render();
 
     return this;

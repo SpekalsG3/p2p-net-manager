@@ -12,9 +12,11 @@ function showElement(div) {
 }
 
 function stressTest() {
+  const size = document.body.getBoundingClientRect();
+
   function spawnNode() {
-    const x = Math.floor(Math.random() * graph.width - graph.width / 2);
-    const y = Math.floor(Math.random() * graph.height - graph.height / 2);
+    const x = Math.floor(Math.random() * size.width - size.width / 2);
+    const y = Math.floor(Math.random() * size.height - size.height / 2);
     const node = new NetworkNode({ x, y });
     graph.newElement(node);
     return node;
